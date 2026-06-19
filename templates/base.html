@@ -369,27 +369,38 @@
     /* ── List section header (지역별 소제목) ── */
     .list-section-header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 2.2rem;
       margin-top: 7rem;
     }
     .list-section-title-link {
       font-family: 'Pretendard', sans-serif;
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: #444;
-      letter-spacing: 0.02em;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1a1a1a;
+      letter-spacing: -0.03em;
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
       text-decoration: none;
       transition: color 0.15s;
-      text-transform: none;
     }
-    .list-section-title-link:hover { color: var(--accent); }
-    .list-section-icon { font-size: 1rem; color: #999 !important; }
+    .list-section-title-link:hover { color: #444; }
+    .list-section-icon { font-size: 1.15rem; color: #1a1a1a !important; }
+    .list-section-sub {
+      font-size: 0.84rem;
+      color: #999;
+      margin-top: 0.45rem;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
 
-    /* 카드 이미지 높이 4열 기준 */
-    .restaurant-card .card-img-top { height: 200px; }
+    /* 카드 이미지 정사각형 */
+    .restaurant-card .card-img-top {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      height: auto;
+    }
 
     /* ── 필터 드롭다운 ── */
     .gnb-bottom { position: relative; }

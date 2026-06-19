@@ -87,8 +87,19 @@
             {% else %}<i class="bi bi-geo-alt"></i>{% endif %}
           </span>
           {{ group.grouper }} 맛집
-          <i class="bi bi-chevron-right" style="font-size:1rem; margin-left:2px;"></i>
+          <i class="bi bi-chevron-right" style="font-size:0.9rem; margin-left:2px;"></i>
         </a>
+        <div class="list-section-sub">
+          {% if group.grouper == "서울" %}핫플부터 골목식당까지, 서울의 솔직한 맛집 기록
+          {% elif group.grouper == "부산" %}바다 내음 가득한 부산의 숨은 맛집 모음
+          {% elif group.grouper == "제주" %}섬에서만 맛볼 수 있는 제주 로컬 맛집
+          {% elif group.grouper == "강릉" %}바다와 커피향이 어우러진 강릉 맛집
+          {% elif group.grouper == "전주" %}비빔밥 그 이상, 전주의 진짜 맛집
+          {% elif group.grouper == "경주" %}천년 고도에서 찾아낸 경주 맛집
+          {% elif group.grouper == "인천" %}차이나타운부터 을왕리까지, 인천 맛집
+          {% else %}이 지역의 추천 맛집 모음
+          {% endif %}
+        </div>
       </div>
       <div class="row g-4" style="margin-bottom: 4.5rem;">
         {% for r in group.list %}
