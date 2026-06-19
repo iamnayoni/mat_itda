@@ -6,8 +6,8 @@ register = template.Library()
 
 @register.simple_tag
 def get_spoons(score):
-    filled = '<i class="bi bi-spoon spoon-filled"></i>'
-    empty = '<i class="bi bi-spoon spoon-empty"></i>'
+    filled = '<i class="bi bi-star-fill spoon-filled"></i>'
+    empty = '<i class="bi bi-star spoon-empty"></i>'
     try:
         score = int(score)
     except (TypeError, ValueError):
