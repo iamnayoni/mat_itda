@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load gourmet_tags %}
+{% block title %}{{ restaurant.name }} — 맛,잇다{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+
+    <a href="{% url 'restaurant_list' %}"
+       style="color: var(--text-muted); text-decoration: none; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 1rem;">
+      <i class="bi bi-arrow-left"></i> 목록으로
+    </a>
+
+    <div class="info-card">
+
+      <!-- 사진 -->
+      {% if restaurant.photo %}
+        <img src="{{ restaurant.photo.url }}" alt="{{ restaurant.name }}"
+             style="width: 100%; max-height: 380px; object-fit: cover; display: block;">
+      {% endif %}
+
+      <div class="p-4">
+
+        <!-- 이름 + 배지 + 버튼 -->
+        <div class="d-flex justify-content-between align-items-start mb-1">
+          <div style="flex: 1;">
+            <span class="badge-category">{{ restaurant.category }}</span>
+            <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--text);
+                       letter-spacing: -0.03em; margin-top: 0.4rem; margin-bottom: 0.2rem;">
+              {{ restaurant.name }}
+            </h2>
+            <div style="color: var(--text-muted); font-size: 0.82rem;">
+              <i class="bi bi-geo-alt me-1"></i>{{ restaurant.address }}
+              <span class="chip ms-2">{{ restaurant.region }}</span>
+            </div>
+          </div>
+          {% if user == restaurant.user %}
+            <div class="d-flex gap-2 ms-3 flex-shrink-0">
+              <a href="{% url 'restaurant_edit' restaurant.pk %}" class="btn btn-outline-accent btn-sm">
+                <i class="bi bi-pencil"></i> 수정
+              </a>
+              <a href="{% url 'restaurant_delete' restaurant.pk %}" class="btn btn-sm"
+                 style="border: 1px solid #dc3545; color: #dc3545; font-size: 0.8rem; border-radius: 4px;">
+                <i class="bi bi-trash"></i> 삭제
+              </a>
+            </div>
+          {% endif %}
+        </div>
+
+        <hr class="light my-3">
+
+        <!-- 평점 -->
+        <div class="mb-3">
+          <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);
+                      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.7rem;">
+            평점
+          </div>
+          <div class="d-flex align-items-center gap-3 mb-2">
+            <span class="rating-label">음식 맛</span>
+            <span>{% get_spoons restaurant.rating_taste %}</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">{{ restaurant.rating_taste }}/5</span>
+          </div>
+          <div class="d-flex align-items-center gap-3 mb-2">
+            <span class="rating-label">분위기</span>
+            <span>{% get_spoons restaurant.rating_mood %}</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">{{ restaurant.rating_mood }}/5</span>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="rating-label">서비스</span>
+            <span>{% get_spoons restaurant.rating_service %}</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">{{ restaurant.rating_service }}/5</span>
+          </div>
+          <div class="mt-2">
+            <span style="background: var(--accent-light); color: var(--accent);
+                         font-size: 0.8rem; font-weight: 700; padding: 3px 10px;
+                         border-radius: 4px; display: inline-block;">
+              평균 {{ restaurant.rating_avg }} / 5
+            </span>
+          </div>
+        </div>
+
+        <hr class="light my-3">
+
+        <!-- 기본 정보 -->
+        <div class="row g-3 mb-3">
+          <div class="col-6 col-md-3">
+            <div style="color: var(--text-muted); font-size: 0.72rem; margin-bottom: 3px;">가격대</div>
+            <div style="font-size: 0.88rem; font-weight: 600; color: var(--text);">{{ restaurant.price_range }}</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div style="color: var(--text-muted); font-size: 0.72rem; margin-bottom: 3px;">분위기</div>
+            <div style="font-size: 0.88rem; font-weight: 600; color: var(--text);">{{ restaurant.vibe }}</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div style="color: var(--text-muted); font-size: 0.72rem; margin-bottom: 3px;">방문 시간대</div>
+            <div style="font-size: 0.88rem; font-weight: 600; color: var(--text);">{{ restaurant.meal_time }}</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div style="color: var(--text-muted); font-size: 0.72rem; margin-bottom: 3px;">방문일</div>
+            <div style="font-size: 0.88rem; font-weight: 600; color: var(--text);">
+              {{ restaurant.visited_date|default:"미기록" }}
+            </div>
+          </div>
+        </div>
+
+        <!-- 편의시설 -->
+        {% if restaurant.facilities %}
+        <div class="mb-3">
+          <div style="color: var(--text-muted); font-size: 0.72rem; margin-bottom: 6px;">편의시설</div>
+          <div class="d-flex flex-wrap gap-2">
+            {% for f in restaurant.facilities %}
+              <span class="chip">{{ f }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- 재방문 -->
+        <div class="mb-3">
+          {% if restaurant.revisit %}
+            <span style="color: #2e7d32; font-size: 0.9rem; font-weight: 600;">✅ 또 갈래요</span>
+          {% else %}
+            <span style="color: var(--text-muted); font-size: 0.9rem;">❌ 한 번으로 충분</span>
+          {% endif %}
+        </div>
+
+        <!-- 메모 -->
+        {% if restaurant.memo %}
+        <hr class="light my-3">
+        <div>
+          <div style="color: var(--text-muted); font-size: 0.72rem; margin-bottom: 6px;">메모</div>
+          <p style="font-size: 0.88rem; line-height: 1.75; color: var(--text-sub);
+                    white-space: pre-wrap;">{{ restaurant.memo }}</p>
+        </div>
+        {% endif %}
+
+        <hr class="light my-3">
+
+        <div class="d-flex justify-content-between" style="color: var(--text-muted); font-size: 0.76rem;">
+          <span><i class="bi bi-person me-1"></i>{{ restaurant.user.nickname }}</span>
+          <span>{{ restaurant.created_at|date:"Y.m.d" }} 등록</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

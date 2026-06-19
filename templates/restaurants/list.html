@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load gourmet_tags %}
+{% block title %}맛집 목록 — 맛,잇다{% endblock %}
+
+{% block content %}
+
+<!-- ── 히어로 슬라이더 ── -->
+<div class="hero-slider mb-4" style="margin-left:calc(-50vw + 50%); margin-right:calc(-50vw + 50%); width:100vw;">
+  <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="hero-slide">
+          <div class="hero-slide-bg" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&fit=crop');"></div>
+          <div class="container hero-slide-content">
+            <div class="hero-tag">✨ 맛,잇다 추천</div>
+            <div class="hero-title">나만 알고 싶은<br>맛집을 기록하세요</div>
+            <div class="hero-sub">방문한 맛집의 맛·분위기·서비스를 솔직하게 남겨보세요</div>
+            <a href="{% url 'restaurant_list' %}" class="hero-btn"><i class="bi bi-map"></i> 맛집 둘러보기</a>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="hero-slide">
+          <div class="hero-slide-bg" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&fit=crop');"></div>
+          <div class="container hero-slide-content">
+            <div class="hero-tag">🍽️ 지역별 탐색</div>
+            <div class="hero-title">서울부터 제주까지<br>전국 맛집 탐방</div>
+            <div class="hero-sub">서울·부산·제주·강릉·전주·경주의 숨은 맛집을 발견하세요</div>
+            <a href="{% url 'restaurant_list' %}?region=서울" class="hero-btn"><i class="bi bi-geo-alt"></i> 지역별 보기</a>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="hero-slide">
+          <div class="hero-slide-bg" style="background-image:url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1400&fit=crop');"></div>
+          <div class="container hero-slide-content">
+            <div class="hero-tag">📝 지금 바로</div>
+            <div class="hero-title">오늘 다녀온 맛집<br>지금 바로 등록하세요</div>
+            <div class="hero-sub">사진·메모·재방문 의향까지 나만의 맛집 족보를 만들어보세요</div>
+            {% if user.is_authenticated %}
+              <a href="{% url 'restaurant_create' %}" class="hero-btn"><i class="bi bi-plus-circle"></i> 맛집 등록하기</a>
+            {% else %}
+              <a href="{% url 'signup' %}" class="hero-btn"><i class="bi bi-person-plus"></i> 무료로 시작하기</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
+</div>
+
+<!-- 등록 버튼 (로그인 시만) -->
+{% if user.is_authenticated %}
+<div class="d-flex justify-content-end mb-3">
+  <a href="{% url 'restaurant_create' %}" class="btn btn-accent px-4 py-2">
+    <i class="bi bi-plus-lg me-1"></i>등록
+  </a>
+</div>
+{% endif %}
+
+<!-- 카드 목록 -->
+{% if restaurants %}
+  {% if not current.region and not current.category and not current.q and not current.price and not current.vibe %}
+    {% regroup restaurants by region as region_groups %}
+    {% for group in region_groups %}
+      <div class="list-section-header">
+        <a href="{% url 'restaurant_list' %}?region={{ group.grouper }}" class="list-section-title-link">
+          <span class="list-section-icon">
+            {% if group.grouper == "서울" %}🏙️
+            {% elif group.grouper == "부산" %}🌊
+            {% elif group.grouper == "제주" %}🌿
+            {% elif group.grouper == "강릉" %}☕
+            {% elif group.grouper == "전주" %}🍚
+            {% elif group.grouper == "경주" %}🏛️
+            {% elif group.grouper == "인천" %}🚢
+            {% else %}📍{% endif %}
+          </span>
+          {{ group.grouper }} 맛집
+          <i class="bi bi-chevron-right" style="font-size:1rem; margin-left:2px;"></i>
+        </a>
+      </div>
+      <div class="row g-3 mb-5">
+        {% for r in group.list %}
+          <div class="col-6 col-md-4 col-lg-3">{% include "restaurants/_card.html" with r=r %}</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="row g-3">
+      {% for r in restaurants %}
+        <div class="col-6 col-md-4 col-lg-3">{% include "restaurants/_card.html" with r=r %}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% else %}
+  <div class="text-center py-5">
+    <i class="bi bi-bowl-hot" style="font-size:3rem; color:var(--border-dark);"></i>
+    <p class="mt-3 fw-bold" style="color:var(--text-sub); font-size:1rem;">등록된 맛집이 없어요</p>
+    <p style="color:var(--text-muted); font-size:0.84rem; margin-top:0.3rem;">첫 번째 맛집을 기록해보세요!</p>
+    {% if user.is_authenticated %}
+      <a href="{% url 'restaurant_create' %}" class="btn btn-accent mt-3 px-4">맛집 등록하기</a>
+    {% else %}
+      <a href="{% url 'login' %}" class="btn btn-accent mt-3 px-4">로그인하고 등록하기</a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}
+
+
+{% block drawer_content %}
+<form method="get" action="{% url 'restaurant_list' %}" id="drawerFilterForm">
+
+  <!-- 지역 -->
+  <div class="drawer-group-title">지역</div>
+  <a href="{% url 'restaurant_list' %}" class="drawer-list-item {% if not current.region %}active{% endif %}">
+    전체 지역
+  </a>
+  {% for val, label in region_choices %}
+    <a href="{% url 'restaurant_list' %}?region={{ val }}"
+       class="drawer-list-item {% if current.region == val %}active{% endif %}">
+      {{ label }}
+    </a>
+  {% endfor %}
+
+  <!-- 음식 종류 -->
+  <div class="drawer-group-title">음식 종류</div>
+  {% for val, label in category_choices %}
+    <a href="{% url 'restaurant_list' %}?category={{ val }}"
+       class="drawer-list-item {% if current.category == val %}active{% endif %}">
+      {{ label }}
+    </a>
+  {% endfor %}
+
+  <!-- 가격대 -->
+  <div class="drawer-group-title">가격대</div>
+  {% for val, label in price_choices %}
+    <a href="{% url 'restaurant_list' %}?price={{ val }}"
+       class="drawer-list-item {% if current.price == val %}active{% endif %}">
+      {{ label }}
+    </a>
+  {% endfor %}
+
+  <!-- 분위기 -->
+  <div class="drawer-group-title">분위기</div>
+  {% for val, label in vibe_choices %}
+    <a href="{% url 'restaurant_list' %}?vibe={{ val }}"
+       class="drawer-list-item {% if current.vibe == val %}active{% endif %}">
+      {{ label }}
+    </a>
+  {% endfor %}
+
+  <!-- 편의시설 -->
+  <div class="drawer-group-title">편의시설</div>
+  {% for facility in facility_options %}
+    <a href="{% url 'restaurant_list' %}?facilities={{ facility }}"
+       class="drawer-list-item {% if facility in current.facilities %}active{% endif %}">
+      {{ facility }}
+    </a>
+  {% endfor %}
+
+  <!-- 정렬 -->
+  <div class="drawer-group-title">정렬</div>
+  <a href="{% url 'restaurant_list' %}?sort=latest"
+     class="drawer-list-item {% if not current.sort or current.sort == 'latest' %}active{% endif %}">
+    최신순
+  </a>
+  <a href="{% url 'restaurant_list' %}?sort=rating_desc"
+     class="drawer-list-item {% if current.sort == 'rating_desc' %}active{% endif %}">
+    별점 높은순
+  </a>
+  <a href="{% url 'restaurant_list' %}?sort=rating_asc"
+     class="drawer-list-item {% if current.sort == 'rating_asc' %}active{% endif %}">
+    별점 낮은순
+  </a>
+
+</form>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% load gourmet_tags %}
+<div class="restaurant-card">
+  <a href="{% url 'restaurant_detail' r.pk %}" style="text-decoration: none; color: inherit; display: block;">
+
+    <!-- 사진 -->
+    {% if r.photo %}
+      <img src="{{ r.photo.url }}" class="card-img-top" alt="{{ r.name }}">
+    {% else %}
+      <div class="d-flex align-items-center justify-content-center"
+           style="height: 180px; background: var(--bg-sub);">
+        <i class="bi bi-camera" style="font-size: 2rem; color: var(--border-dark);"></i>
+      </div>
+    {% endif %}
+
+    <div class="card-body">
+      <!-- 이름 + 배지 -->
+      <div class="d-flex justify-content-between align-items-start mb-1">
+        <h6 class="mb-0 fw-bold" style="font-size: 0.9rem; color: var(--text); letter-spacing: -0.01em; line-height: 1.3;">
+          {{ r.name }}
+        </h6>
+        <span class="badge-category ms-1 flex-shrink-0">{{ r.category }}</span>
+      </div>
+
+      <!-- 주소 -->
+      <div style="color: var(--text-muted); font-size: 0.74rem; margin-bottom: 0.5rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+        <i class="bi bi-geo-alt me-1"></i>{{ r.address }}
+      </div>
+
+      <!-- 평점 -->
+      <div class="mb-2">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="rating-label">맛</span>
+          <span>{% get_spoons r.rating_taste %}</span>
+        </div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="rating-label">분위기</span>
+          <span>{% get_spoons r.rating_mood %}</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="rating-label">서비스</span>
+          <span>{% get_spoons r.rating_service %}</span>
+        </div>
+      </div>
+
+      <hr class="light my-2">
+
+      <div class="d-flex justify-content-between align-items-center">
+        <span style="color: var(--text-muted); font-size: 0.74rem;">
+          <i class="bi bi-clock me-1"></i>{{ r.meal_time }}
+        </span>
+        {% if r.revisit %}
+          <span style="font-size: 0.72rem; color: #2e7d32; font-weight: 600;">✅ 또 갈래요</span>
+        {% else %}
+          <span style="font-size: 0.72rem; color: var(--text-muted);">❌ 한번으로 충분</span>
+        {% endif %}
+      </div>
+
+      {% if r.memo %}
+        <p class="memo-preview mt-1 mb-0">{{ r.memo }}</p>
+      {% endif %}
+    </div>
+  </a>
+
+  <!-- 수정/삭제 버튼 (본인만) -->
+  {% if user == r.user %}
+  <div class="px-3 pb-3 d-flex gap-2">
+    <a href="{% url 'restaurant_edit' r.pk %}" class="btn btn-outline-accent btn-sm flex-fill"
+       style="font-size: 0.78rem;">
+      <i class="bi bi-pencil me-1"></i>수정
+    </a>
+    <a href="{% url 'restaurant_delete' r.pk %}" class="btn btn-sm flex-fill"
+       style="border: 1px solid #dc3545; color: #dc3545; font-size: 0.78rem; border-radius: 4px;">
+      <i class="bi bi-trash me-1"></i>삭제
+    </a>
+  </div>
+  {% endif %}
+</div>

@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}맛,잇다{% endblock %}</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:          #FFFFFF;
+      --bg-sub:      #F8F8F8;
+      --bg-card:     #FFFFFF;
+      --bg-input:    #F5F5F5;
+      --text:        #1A1A1A;
+      --text-sub:    #3D3D3D;
+      --text-muted:  #767676;
+      --accent:      #5F0080;
+      --accent-hover:#4a0066;
+      --accent-light:#F5EEF8;
+      --border:      #E8E8E8;
+      --border-dark: #D0D0D0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── Navbar Top ── */
+    .gnb-top {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+    }
+    /* 3-column grid: 로고 | 검색(중앙) | 버튼 — 좌우 같은 너비로 검색 정중앙 고정 */
+    .gnb-top .container {
+      height: 70px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 1rem;
+    }
+    .gnb-top-left  { display: flex; align-items: center; }
+    .gnb-top-mid   { display: flex; justify-content: center; }
+    .gnb-top-right { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
+
+    .navbar-brand {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--accent) !important;
+      letter-spacing: -0.04em;
+      padding: 0;
+      text-decoration: none;
+    }
+    .navbar-brand span { color: var(--text); }
+
+    /* 검색바 */
+    .gnb-search {
+      width: min(480px, 100%);
+      display: flex;
+      align-items: center;
+      border: 2px solid var(--accent);
+      border-radius: 4px;
+      overflow: hidden;
+      height: 44px;
+    }
+    .gnb-search input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 0 1rem;
+      font-size: 0.9rem;
+      font-family: 'Pretendard', sans-serif;
+      color: var(--text);
+      background: #fff;
+      height: 100%;
+    }
+    .gnb-search input::placeholder { color: var(--text-muted); }
+    .gnb-search button {
+      width: 48px;
+      height: 100%;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .gnb-search button:hover { background: var(--accent-hover); }
+
+    /* 우측 버튼 그룹 */
+    .gnb-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .gnb-actions .gnb-user {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-sub);
+      font-size: 0.72rem;
+      text-decoration: none;
+      gap: 3px;
+      min-width: 40px;
+      cursor: pointer;
+    }
+    .gnb-actions .gnb-user i { font-size: 1.3rem; color: var(--text-sub); }
+    .gnb-actions .gnb-user:hover i,
+    .gnb-actions .gnb-user:hover { color: var(--accent); }
+
+    /* ── Navbar Bottom (카테고리 바) ── */
+    .gnb-bottom {
+      background: #fff;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1030;
+    }
+    .gnb-bottom .container {
+      height: 46px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    /* 햄버거 전체메뉴 */
+    .gnb-ham {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 1rem 0 0;
+      border-right: 1px solid var(--border);
+      border-top: none;
+      border-bottom: none;
+      border-left: none;
+      margin-right: 1rem;
+      height: 100%;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+      background: transparent;
+      outline: none;
+      box-shadow: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .gnb-ham:hover, .gnb-ham:focus { color: var(--accent); background: transparent; outline: none; box-shadow: none; }
+    .gnb-ham i { font-size: 1.1rem; }
+
+    /* 카테고리 링크 */
+    .gnb-cats {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      height: 100%;
+    }
+    .gnb-cats::-webkit-scrollbar { display: none; }
+    .gnb-cat {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0 0.9rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-sub);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .gnb-cat:hover,
+    .gnb-cat.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+
+    .nav-link {
+      color: var(--text-sub) !important;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0 0.6rem !important;
+      transition: color 0.15s;
+    }
+    .nav-link:hover { color: var(--accent) !important; }
+
+    /* ── Buttons ── */
+    .btn-accent {
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .btn-accent:hover { background-color: var(--accent-hover); color: #fff; }
+
+    .btn-outline-accent {
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      background: transparent;
+      font-weight: 600;
+      font-size: 0.82rem;
+      border-radius: 4px;
+    }
+    .btn-outline-accent:hover { background-color: var(--accent); color: #fff; }
+
+    .btn-outline-secondary {
+      border-color: var(--border-dark);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      border-radius: 4px;
+    }
+    .btn-outline-secondary:hover {
+      background-color: var(--bg-sub);
+      color: var(--text);
+      border-color: var(--border-dark);
+    }
+
+    /* ── Cards ── */
+    .restaurant-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      height: 100%;
+    }
+    .restaurant-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    }
+    .restaurant-card .card-img-top {
+      height: 190px;
+      object-fit: cover;
+    }
+    .restaurant-card .card-body { padding: 1rem; }
+
+    /* ── Spoon icons ── */
+    .spoon-filled { color: var(--accent); font-size: 0.82rem; }
+    .spoon-empty  { color: #CCCCCC;       font-size: 0.82rem; }
+
+    /* ── Category badge ── */
+    .badge-category {
+      background-color: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Forms ── */
+    .form-control, .form-select {
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-dark);
+      color: var(--text);
+      border-radius: 4px;
+      font-size: 0.88rem;
+    }
+    .form-control::placeholder { color: var(--text-muted); }
+    .form-control:focus, .form-select:focus {
+      background-color: #fff;
+      border-color: var(--accent);
+      color: var(--text);
+      box-shadow: 0 0 0 3px rgba(95, 0, 128, 0.10);
+    }
+    .form-label {
+      color: var(--text-sub);
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
+    .form-check-label { color: var(--text-sub); font-size: 0.84rem; }
+
+    /* ── Filter box ── */
+    .filter-box {
+      background: var(--bg-sub);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    /* ── Rating label ── */
+    .rating-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      min-width: 48px;
+    }
+
+    /* ── Memo preview ── */
+    .memo-preview {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Divider ── */
+    hr.light { border-color: var(--border); opacity: 1; }
+
+    /* ── Messages ── */
+    .messages-container {
+      position: fixed; top: 64px; right: 20px;
+      z-index: 9999; min-width: 280px;
+    }
+
+    /* ── Page layout ── */
+    main.container { padding-top: 1.5rem; padding-bottom: 3rem; }
+
+    /* ── Auth card ── */
+    .auth-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2.2rem 2rem;
+    }
+
+    /* ── Info card (detail page) ── */
+    .info-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    /* ── Chip (facility tag) ── */
+    .chip {
+      display: inline-block;
+      background: var(--bg-sub);
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ── List section header (지역별 소제목) ── */
+    .list-section-header {
+      text-align: center;
+      margin-bottom: 1.2rem;
+      margin-top: 0.5rem;
+    }
+    .list-section-title-link {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .list-section-title-link:hover { color: var(--accent); }
+    .list-section-icon { font-size: 1.1rem; }
+
+    /* 카드 이미지 높이 4열 기준 */
+    .restaurant-card .card-img-top { height: 180px; }
+
+    /* ── 필터 드롭다운 ── */
+    .gnb-bottom { position: relative; }
+
+    .filter-drawer {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 220px;
+      background: #fff;
+      z-index: 3000;
+      border: 1px solid var(--border);
+      border-top: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      flex-direction: column;
+      overflow-y: auto;
+      max-height: 70vh;
+    }
+    .filter-drawer.open { display: flex; }
+
+    .filter-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2999;
+    }
+    .filter-overlay.open { display: block; }
+
+    .drawer-head {
+      padding: 0.9rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .drawer-head-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .drawer-close {
+      background: none; border: none;
+      font-size: 1.1rem; color: var(--text-muted);
+      cursor: pointer; padding: 0; line-height: 1;
+    }
+    .drawer-close:hover { color: var(--text); }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+      scrollbar-width: thin;
+    }
+
+    /* 마켓컬리식 세로 리스트 */
+    .drawer-group-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      padding: 1rem 1.4rem 0.35rem;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      margin-top: 0.2rem;
+    }
+    .drawer-group-title:first-of-type { border-top: none; margin-top: 0; }
+    .drawer-list-item {
+      display: block;
+      padding: 0.6rem 1.4rem;
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.12s;
+      cursor: pointer;
+      border: none;
+    }
+    .drawer-list-item:hover  { color: var(--accent); }
+    .drawer-list-item.active { color: var(--accent); font-weight: 700; }
+
+    /* 검색 영역 */
+    .drawer-search-wrap {
+      padding: 0.9rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .drawer-foot {
+      padding: 0.9rem 1.2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    /* 햄버거 active 상태 */
+    .gnb-ham.active { color: var(--accent); }
+
+    /* 드로어 칩 (필터 선택 버튼) */
+    .drawer-chip {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border-dark);
+      background: #fff;
+      color: var(--text-sub);
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .drawer-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .drawer-chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* ── 상단 공지 바 ── */
+    .top-notice {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 9px 1rem;
+      position: relative;
+      letter-spacing: 0.01em;
+    }
+    .top-notice a { color: #fff; text-decoration: underline; margin-left: 4px; }
+    .top-notice a:hover { opacity: 0.85; }
+    .top-notice-close {
+      position: absolute;
+      right: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.8);
+      font-size: 1rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+    }
+    .top-notice-close:hover { color: #fff; }
+
+    /* ── 히어로 슬라이더 ── */
+    .hero-slider { background: var(--bg-sub); overflow: hidden; }
+    .hero-slide {
+      min-height: 340px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-slide-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.45);
+    }
+    .hero-slide-content {
+      position: relative;
+      z-index: 2;
+      padding: 2.5rem 3rem;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+    .hero-title {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.25;
+      letter-spacing: -0.04em;
+      margin-bottom: 0.5rem;
+    }
+    .hero-sub {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 1.4rem;
+    }
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .hero-btn:hover { opacity: 0.9; color: var(--accent); }
+    .carousel-indicators [data-bs-target] {
+      width: 6px; height: 6px; border-radius: 50%;
+      border: none; background: rgba(255,255,255,0.5);
+    }
+    .carousel-indicators .active { background: #fff; width: 20px; border-radius: 3px; }
+    .carousel-control-prev, .carousel-control-next {
+      width: 40px; opacity: 0.7;
+    }
+
+    /* ── Footer ── */
+    .site-footer { margin-top: 4rem; border-top: 1px solid var(--border); }
+
+    .footer-links-wrap {
+      background: var(--bg-sub);
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .footer-links {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+    .footer-col-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 0.9rem;
+      letter-spacing: -0.01em;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 0.45rem;
+      transition: color 0.15s;
+    }
+    .footer-col a:hover { color: var(--accent); }
+
+    .footer-bottom {
+      background: #fff;
+      padding: 2rem 0 2.5rem;
+    }
+    .footer-brand {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--accent);
+      letter-spacing: -0.04em;
+      margin-bottom: 0.5rem;
+    }
+    .footer-brand span { color: var(--text); }
+    .footer-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.7rem;
+      line-height: 1.6;
+    }
+    .footer-meta {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      align-items: center;
+    }
+    .footer-dot { color: var(--border-dark); }
+    .footer-copy {
+      font-size: 0.74rem;
+      color: var(--border-dark);
+      margin-top: 0.6rem;
+    }
+
+    @media (max-width: 768px) {
+      .footer-links { grid-template-columns: repeat(2, 1fr); }
+      .gnb-search { width: 100%; max-width: 340px; }
+      .gnb-top .container { gap: 0.6rem; }
+    }
+    @media (max-width: 480px) {
+      .footer-links { grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+    }
+  </style>
+
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- ── 상단 공지 바 ── -->
+<div class="top-notice" id="topNotice">
+  지금 가입하고 <strong>맛집 기록 서비스</strong>를 무료로 이용해보세요!
+  <a href="{% url 'signup' %}">회원가입 →</a>
+  <button class="top-notice-close" onclick="document.getElementById('topNotice').style.display='none'">
+    <i class="bi bi-x-lg"></i>
+  </button>
+</div>
+
+<!-- ── GNB Top: 로고 | 검색(정중앙) | 회원버튼(우측) ── -->
+<header class="gnb-top">
+  <div class="container">
+
+    <!-- 왼쪽: 로고 -->
+    <div class="gnb-top-left">
+      <a class="navbar-brand" href="{% url 'restaurant_list' %}">맛<span>,</span>잇다</a>
+    </div>
+
+    <!-- 가운데: 검색바 -->
+    <div class="gnb-top-mid">
+      <form class="gnb-search" method="get" action="{% url 'restaurant_list' %}">
+        <input type="text" name="q" placeholder="맛집 이름으로 검색해보세요" autocomplete="off">
+        <button type="submit"><i class="bi bi-search"></i></button>
+      </form>
+    </div>
+
+    <!-- 오른쪽: 회원 액션 -->
+    <div class="gnb-top-right">
+      <div class="gnb-actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'restaurant_create' %}" class="gnb-user">
+            <i class="bi bi-plus-circle"></i>
+            <span>맛집 등록</span>
+          </a>
+          <a href="{% url 'logout' %}" class="gnb-user">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>로그아웃</span>
+          </a>
+          <div class="gnb-user" style="color: var(--accent);">
+            <i class="bi bi-person-fill" style="color: var(--accent);"></i>
+            <span style="font-weight: 700; color: var(--accent);">{{ user.nickname }}</span>
+          </div>
+        {% else %}
+          <a href="{% url 'login' %}" class="gnb-user">
+            <i class="bi bi-person"></i>
+            <span>로그인</span>
+          </a>
+          <a href="{% url 'signup' %}" class="gnb-user">
+            <i class="bi bi-person-plus"></i>
+            <span>회원가입</span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</header>
+
+<!-- ── GNB Bottom: 햄버거 + 카테고리 빠른이동 ── -->
+<nav class="gnb-bottom">
+  <div class="container" style="position:relative;">
+
+    <!-- 필터 드롭다운 (버튼 바로 아래) -->
+    <div class="filter-overlay" id="filterOverlay" onclick="closeFilterDrawer()"></div>
+    <div class="filter-drawer" id="filterDrawer">
+      <div class="drawer-body">{% block drawer_content %}{% endblock %}</div>
+    </div>
+
+    <!-- 햄버거 전체메뉴 -->
+    <button class="gnb-ham" id="drawerToggle" onclick="openFilterDrawer()">
+      <i class="bi bi-list"></i> 전체 맛집
+    </button>
+
+    <!-- 카테고리 / 지역 빠른이동 -->
+    <div class="gnb-cats">
+      <a href="{% url 'restaurant_list' %}?category=한식"   class="gnb-cat">한식</a>
+      <a href="{% url 'restaurant_list' %}?category=일식"   class="gnb-cat">일식</a>
+      <a href="{% url 'restaurant_list' %}?category=중식"   class="gnb-cat">중식</a>
+      <a href="{% url 'restaurant_list' %}?category=양식"   class="gnb-cat">양식</a>
+      <a href="{% url 'restaurant_list' %}?category=고기"   class="gnb-cat">고기</a>
+      <a href="{% url 'restaurant_list' %}?category=해산물" class="gnb-cat">해산물</a>
+      <a href="{% url 'restaurant_list' %}?category=카페/디저트" class="gnb-cat">카페/디저트</a>
+      <span style="width:1px; background:var(--border); height:20px; margin: 0 0.4rem; flex-shrink:0;"></span>
+      <a href="{% url 'restaurant_list' %}?region=서울"  class="gnb-cat">서울</a>
+      <a href="{% url 'restaurant_list' %}?region=부산"  class="gnb-cat">부산</a>
+      <a href="{% url 'restaurant_list' %}?region=제주"  class="gnb-cat">제주</a>
+      <a href="{% url 'restaurant_list' %}?region=강릉"  class="gnb-cat">강릉</a>
+      <a href="{% url 'restaurant_list' %}?region=전주"  class="gnb-cat">전주</a>
+      <a href="{% url 'restaurant_list' %}?region=경주"  class="gnb-cat">경주</a>
+    </div>
+  </div>
+</nav>
+
+{% if messages %}
+<div class="messages-container">
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert"
+         style="font-size: 0.85rem;">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<main class="container">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+
+  <!-- 링크 섹션 -->
+  <div class="footer-links-wrap">
+    <div class="container">
+      <div class="footer-links">
+        <div class="footer-col">
+          <div class="footer-col-title">맛집 탐색</div>
+          <a href="{% url 'restaurant_list' %}?region=서울">서울 맛집</a>
+          <a href="{% url 'restaurant_list' %}?region=부산">부산 맛집</a>
+          <a href="{% url 'restaurant_list' %}?region=제주">제주 맛집</a>
+          <a href="{% url 'restaurant_list' %}?region=강릉">강릉 맛집</a>
+          <a href="{% url 'restaurant_list' %}?region=전주">전주 맛집</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">음식 종류</div>
+          <a href="{% url 'restaurant_list' %}?category=한식">한식</a>
+          <a href="{% url 'restaurant_list' %}?category=일식">일식</a>
+          <a href="{% url 'restaurant_list' %}?category=중식">중식</a>
+          <a href="{% url 'restaurant_list' %}?category=양식">양식</a>
+          <a href="{% url 'restaurant_list' %}?category=카페/디저트">카페 / 디저트</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">분위기</div>
+          <a href="{% url 'restaurant_list' %}?vibe=모던 / 세련된">모던 / 세련된</a>
+          <a href="{% url 'restaurant_list' %}?vibe=고즈넉한">고즈넉한</a>
+          <a href="{% url 'restaurant_list' %}?vibe=로컬 감성">로컬 감성</a>
+          <a href="{% url 'restaurant_list' %}?vibe=뷰 맛집">뷰 맛집</a>
+          <a href="{% url 'restaurant_list' %}?vibe=이국적인">이국적인</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">이용 안내</div>
+          {% if user.is_authenticated %}
+            <a href="{% url 'restaurant_create' %}">맛집 등록하기</a>
+            <a href="{% url 'logout' %}">로그아웃</a>
+          {% else %}
+            <a href="{% url 'login' %}">로그인</a>
+            <a href="{% url 'signup' %}">회원가입</a>
+          {% endif %}
+          <a href="{% url 'restaurant_list' %}">전체 맛집 보기</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 하단 회사 정보 -->
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-brand">맛<span>,</span>잇다</div>
+      <p class="footer-desc">
+        나만의 솔직한 맛집 족보 — 가고 싶은 곳, 가봤던 곳, 또 가고 싶은 곳을 기록하세요.
+      </p>
+      <div class="footer-meta">
+        <span>대표: 김나연</span>
+        <span class="footer-dot">·</span>
+        <span>문의: matitda@example.kr</span>
+        <span class="footer-dot">·</span>
+        <span>서울특별시 맛집로 1번길</span>
+      </div>
+      <div class="footer-copy">© 2024 맛,잇다. All rights reserved.</div>
+    </div>
+  </div>
+
+</footer>
+
+<!-- drawer moved inside gnb-bottom -->
+<div style="display:none">
+    {% block drawer_content_unused %}{% endblock %}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function openFilterDrawer() {
+    document.getElementById('filterOverlay').classList.add('open');
+    document.getElementById('filterDrawer').classList.add('open');
+    document.getElementById('drawerToggle').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeFilterDrawer() {
+    document.getElementById('filterOverlay').classList.remove('open');
+    document.getElementById('filterDrawer').classList.remove('open');
+    document.getElementById('drawerToggle').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
