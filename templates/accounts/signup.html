@@ -2,8 +2,8 @@
 {% block title %}회원가입 — 맛,잇다{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center" style="padding-top: 2rem;">
-  <div class="col-md-5 col-lg-4">
+<div class="row justify-content-center" style="padding-top: 2rem; padding-bottom: 4rem;">
+  <div class="col-md-7 col-lg-6">
 
     <div class="text-center mb-4">
       <div style="font-size: 1.8rem; font-weight: 900; color: var(--accent); letter-spacing: -0.04em;">맛,잇다</div>
@@ -11,63 +11,202 @@
       <p style="color: var(--text-muted); font-size: 0.82rem; margin-top: 0.3rem;">맛집 기록을 시작해보세요</p>
     </div>
 
-    <div class="auth-card">
+    <div class="auth-card" style="padding: 2rem;">
       <form method="post" novalidate>
         {% csrf_token %}
 
+        <p style="font-size: 0.75rem; color: var(--text-muted); text-align: right; margin-bottom: 1rem;">
+          <span style="color: #e53935;">*</span> 필수입력사항
+        </p>
+
+        <hr class="light mb-4">
+
+        <!-- 아이디 -->
+        <div class="signup-row mb-3">
+          <label class="signup-label">아이디 <span style="color:#e53935;">*</span></label>
+          <div class="signup-field">
+            {{ form.username }}
+            {% if form.username.errors %}
+              <div class="field-error">{{ form.username.errors.0 }}</div>
+            {% endif %}
+            <div class="field-hint">영문 소문자, 숫자 조합 4~20자</div>
+          </div>
+        </div>
+
+        <!-- 닉네임 -->
+        <div class="signup-row mb-3">
+          <label class="signup-label">닉네임 <span style="color:#e53935;">*</span></label>
+          <div class="signup-field">
+            {{ form.nickname }}
+            {% if form.nickname.errors %}
+              <div class="field-error">{{ form.nickname.errors.0 }}</div>
+            {% endif %}
+            <div class="field-hint">맛집 카드에 표시되는 이름이에요</div>
+          </div>
+        </div>
+
+        <!-- 이메일 -->
+        <div class="signup-row mb-3">
+          <label class="signup-label">이메일</label>
+          <div class="signup-field">
+            {{ form.email }}
+            {% if form.email.errors %}
+              <div class="field-error">{{ form.email.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- 비밀번호 -->
+        <div class="signup-row mb-3">
+          <label class="signup-label">비밀번호 <span style="color:#e53935;">*</span></label>
+          <div class="signup-field">
+            {{ form.password1 }}
+            {% if form.password1.errors %}
+              <div class="field-error">{{ form.password1.errors.0 }}</div>
+            {% endif %}
+            <div class="field-hint">영문, 숫자, 특수문자 조합 8자 이상</div>
+          </div>
+        </div>
+
+        <!-- 비밀번호 확인 -->
+        <div class="signup-row mb-4">
+          <label class="signup-label">비밀번호 확인 <span style="color:#e53935;">*</span></label>
+          <div class="signup-field">
+            {{ form.password2 }}
+            {% if form.password2.errors %}
+              <div class="field-error">{{ form.password2.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <hr class="light mb-3">
+
+        <!-- 약관 동의 -->
         <div class="mb-3">
-          <label class="form-label">아이디</label>
-          {{ form.username }}
-          {% if form.username.errors %}
-            <div class="text-danger mt-1" style="font-size: 0.78rem;">{{ form.username.errors.0 }}</div>
-          {% endif %}
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.92rem; font-weight:700; color:var(--text); margin-bottom:0.8rem;">
+            <input type="checkbox" id="agreeAll" style="width:18px; height:18px; accent-color:var(--accent); cursor:pointer;">
+            전체 동의합니다.
+          </label>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-left:26px; margin-bottom:0.8rem;">
+            선택항목에 동의하지 않아도 회원가입 및 서비스 이용이 가능합니다.
+          </div>
+
+          <hr class="light mb-3">
+
+          <div class="agree-item">
+            {{ form.agree_terms }}
+            <label for="{{ form.agree_terms.id_for_label }}">
+              이용약관 동의 <span style="color:#e53935;">(필수)</span>
+            </label>
+            {% if form.agree_terms.errors %}
+              <div class="field-error ms-0">{{ form.agree_terms.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="agree-item">
+            {{ form.agree_privacy }}
+            <label for="{{ form.agree_privacy.id_for_label }}">
+              개인정보 수집·이용 동의 <span style="color:#e53935;">(필수)</span>
+            </label>
+            {% if form.agree_privacy.errors %}
+              <div class="field-error ms-0">{{ form.agree_privacy.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="agree-item">
+            {{ form.agree_marketing }}
+            <label for="{{ form.agree_marketing.id_for_label }}">
+              마케팅 정보 수신 동의 <span style="color:var(--text-muted);">(선택)</span>
+            </label>
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">닉네임</label>
-          {{ form.nickname }}
-          {% if form.nickname.errors %}
-            <div class="text-danger mt-1" style="font-size: 0.78rem;">{{ form.nickname.errors.0 }}</div>
-          {% endif %}
-          <div style="color: var(--text-muted); font-size: 0.74rem; margin-top: 4px;">맛집 카드에 표시되는 이름이에요</div>
-        </div>
+        <hr class="light mb-4">
 
-        <div class="mb-3">
-          <label class="form-label">비밀번호</label>
-          {{ form.password1 }}
-          {% if form.password1.errors %}
-            <div class="text-danger mt-1" style="font-size: 0.78rem;">{{ form.password1.errors.0 }}</div>
-          {% endif %}
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label">비밀번호 확인</label>
-          {{ form.password2 }}
-          {% if form.password2.errors %}
-            <div class="text-danger mt-1" style="font-size: 0.78rem;">{{ form.password2.errors.0 }}</div>
-          {% endif %}
-        </div>
-
-        <button type="submit" class="btn btn-accent w-100 py-2" style="font-size: 0.9rem; letter-spacing: 0.02em;">
+        <button type="submit" class="btn btn-accent w-100 py-2" style="font-size:0.95rem; font-weight:700; letter-spacing:0.02em;">
           가입하기
         </button>
+
       </form>
 
       <hr class="light my-3">
-
       <div class="text-center" style="color: var(--text-muted); font-size: 0.82rem;">
         이미 계정이 있으신가요?
         <a href="{% url 'login' %}" style="color: var(--accent); text-decoration: none; font-weight: 700;">로그인</a>
       </div>
     </div>
+
   </div>
 </div>
+
+<style>
+  .signup-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .signup-label {
+    min-width: 110px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    padding-top: 0.5rem;
+  }
+  .signup-field {
+    flex: 1;
+  }
+  .signup-field input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-dark);
+    border-radius: 4px;
+    font-size: 0.88rem;
+    background: var(--bg-input);
+    color: var(--text);
+    outline: none;
+  }
+  .signup-field input:focus {
+    border-color: var(--accent);
+    background: #fff;
+  }
+  .field-hint {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .field-error {
+    font-size: 0.75rem;
+    color: #e53935;
+    margin-top: 4px;
+  }
+  .agree-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--text-sub);
+  }
+  .agree-item input[type=checkbox] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .agree-item label { cursor: pointer; margin: 0; }
+</style>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  document.querySelectorAll('input[type=text], input[type=password]').forEach(el => {
-    el.classList.add('form-control');
+  const agreeAll = document.getElementById('agreeAll');
+  const checkboxes = document.querySelectorAll('.agree-item input[type=checkbox]');
+  agreeAll.addEventListener('change', () => {
+    checkboxes.forEach(c => c.checked = agreeAll.checked);
   });
+  checkboxes.forEach(c => c.addEventListener('change', () => {
+    agreeAll.checked = [...checkboxes].every(c => c.checked);
+  }));
 </script>
 {% endblock %}
