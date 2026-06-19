@@ -42,7 +42,7 @@ class Restaurant(models.Model):
     rating_mood = models.IntegerField(verbose_name='분위기')
     rating_service = models.IntegerField(verbose_name='서비스')
     memo = models.TextField(blank=True, verbose_name='메모')
-    photo = models.ImageField(upload_to='restaurants/', blank=True, null=True, verbose_name='사진')
+    photo = models.URLField(max_length=500, blank=True, null=True, verbose_name='사진')
     visited_date = models.DateField(null=True, blank=True, verbose_name='방문일')
     revisit = models.BooleanField(default=True, verbose_name='재방문 의향')
     created_at = models.DateTimeField(auto_now_add=True)

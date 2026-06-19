@@ -4,7 +4,7 @@
 
     <!-- 사진 -->
     {% if r.photo %}
-      <img src="{{ r.photo.url }}" class="card-img-top" alt="{{ r.name }}">
+      <img src="{{ r.photo }}" class="card-img-top" alt="{{ r.name }}">
     {% else %}
       <div class="d-flex align-items-center justify-content-center"
            style="height: 180px; background: var(--bg-sub);">
