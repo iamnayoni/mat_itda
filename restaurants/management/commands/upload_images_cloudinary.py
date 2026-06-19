@@ -39,13 +39,12 @@ class Command(BaseCommand):
             api_secret=os.environ.get('CLOUDINARY_API_SECRET'),
         )
 
+        # 기존 사진 초기화
+        Restaurant.objects.update(photo="")
+
         ok, fail, skip = 0, 0, 0
 
         for r in Restaurant.objects.all():
-            if r.photo:
-                self.stdout.write(f"  skip (already has photo): {r.name}")
-                skip += 1
-                continue
 
             entry = SEED_MAP.get(r.name)
             if not entry:
@@ -67,7 +66,7 @@ class Command(BaseCommand):
                     public_id=f"restaurant_{r.pk}",
                     overwrite=True,
                 )
-                r.photo = result['public_id'] + '.jpg'
+                r.photo = result['secure_url']
                 r.save(update_fields=["photo"])
                 self.stdout.write(self.style.SUCCESS(f"  OK [{lock}] {r.name}"))
                 ok += 1
